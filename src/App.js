@@ -1,7 +1,8 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import Header from './components/Header';
 import Meals from './components/Meals';
 import CartContext from './store/CartContext';
+import Modal from './components/UI/Modal';
 
 const cartReducer = (state, action) => {
   switch (action.type) {
@@ -37,6 +38,7 @@ const cartReducer = (state, action) => {
 };
 
 const App = () => {
+  const [isModalOpen, setIsModalOpen] = useState(true);
   const [cartState, dispatchCart] = useReducer(cartReducer, {
     items: []
   });
@@ -45,10 +47,21 @@ const App = () => {
     dispatchCart({ type: 'ADD_ITEM', item });
   };
 
+  const openModalHandler = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModalHandler = () => {
+    setIsModalOpen(false);
+  };
+
  return (
     <CartContext.Provider value={{ items: cartState.items, addItem: addItemHandler }}>
       <Header />
       <Meals />
+      <Modal open={isModalOpen} onClose={closeModalHandler}>
+        test
+      </Modal>
     </CartContext.Provider>
   );
 }
