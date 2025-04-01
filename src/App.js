@@ -32,13 +32,16 @@ const cartReducer = (state, action) => {
       return { items: updatedItems };
     }
 
+    case 'CLEAR_CART':
+      return { items: [] };
+
     default:
         return state;
   }
 };
 
 const App = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [cartState, dispatchCart] = useReducer(cartReducer, {
     items: []
   });
@@ -47,21 +50,33 @@ const App = () => {
     dispatchCart({ type: 'ADD_ITEM', item });
   };
 
+  const clearCartHandler = () => {
+    dispatchCart({ type: 'CLEAR_CART' });
+    setIsModalOpen(false);
+    console.log('Checkout is finished');
+  };
+
   const openModalHandler = () => {
+    if (cartState.items.length === 0) {
+      return;
+    }
     setIsModalOpen(true);
+    console.log('Checkout is processed');
   };
 
   const closeModalHandler = () => {
     setIsModalOpen(false);
   };
 
+  const totalPrice = cartState.items.reduce((total, item) => total + item.price * item.quantity, 0);
+
  return (
     <CartContext.Provider value={{ items: cartState.items, addItem: addItemHandler }}>
-      <Header />
+      <Header onOpenCart={openModalHandler} />
       <Meals />
-      <Modal open={isModalOpen} onClose={closeModalHandler}>
-        test
-      </Modal>
+      {isModalOpen && (
+        <Modal open={isModalOpen} onClose={closeModalHandler} onCheckout={clearCartHandler} items={cartState.items} totalPrice={totalPrice} />
+      )}
     </CartContext.Provider>
   );
 }

@@ -4,15 +4,15 @@ import Button from './UI/Button'
 import { useContext } from 'react';
 
 
-const Header = () => {
+const Header = (props) => {
 
     const cartContext = useContext(CartContext);
 
     const cartItems = cartContext.items;
 
-    const cartContentHandler = () => {
-        console.log(cartItems);
-    }
+    // const cartContentHandler = () => {
+    //     console.log(cartItems);
+    // }
 
     return (
         <header id="main-header">
@@ -21,7 +21,7 @@ const Header = () => {
                 <h1>React Food Order App</h1>
             </div>
             <nav>
-            <Button textOnly onClick={cartContentHandler}>Cart ({cartItems.length})</Button>
+            <Button textOnly onClick={props.onOpenCart}>Cart ({cartItems.length})</Button>
             </nav>
         </header>
     )
